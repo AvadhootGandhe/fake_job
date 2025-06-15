@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Fraud Detection</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/styles.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 class="mb-0">Job Fraud Detection</h2>
+            </div>
+            <div class="card-body">
+                <form id="jobForm">
+                    <!-- Basic Information -->
+                    <h4 class="mb-3">Basic Information</h4>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="title" class="form-label">Job Title*</label>
+                            <input type="text" class="form-control" id="title" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="company" class="form-label">Company Name*</label>
+                            <input type="text" class="form-control" id="company" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="location" class="form-label">Location*</label>
+                            <input type="text" class="form-control" id="location" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="department" class="form-label">Department</label>
+                            <input type="text" class="form-control" id="department">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="company_profile" class="form-label">Company Profile</label>
+                        <textarea class="form-control" id="company_profile" rows="3" placeholder="Enter company description, history, and other relevant information"></textarea>
+                    </div>
+
+                    <!-- Job Details -->
+                    <h4 class="mb-3 mt-4">Job Details</h4>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="industry" class="form-label">Industry</label>
+                            <input type="text" class="form-control" id="industry">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="function" class="form-label">Function</label>
+                            <input type="text" class="form-control" id="function">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="employment_type" class="form-label">Employment Type</label>
+                            <select class="form-select" id="employment_type">
+                                <option value="">Select type</option>
+                                <option value="Full-time">Full-time</option>
+                                <option value="Part-time">Part-time</option>
+                                <option value="Contract">Contract</option>
+                                <option value="Temporary">Temporary</option>
+                                <option value="Internship">Internship</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="salary_range" class="form-label">Salary Range</label>
+                            <input type="text" class="form-control" id="salary_range" placeholder="e.g., $50,000 - $70,000">
+                        </div>
+                    </div>
+
+                    <!-- Requirements -->
+                    <h4 class="mb-3 mt-4">Requirements</h4>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="required_experience" class="form-label">Required Experience</label>
+                            <input type="text" class="form-control" id="required_experience" placeholder="e.g., 2-5 years">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="required_education" class="form-label">Required Education</label>
+                            <input type="text" class="form-control" id="required_education" placeholder="e.g., Bachelor's Degree">
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <h4 class="mb-3 mt-4">Additional Information</h4>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Job Description*</label>
+                        <textarea class="form-control" id="description" rows="4" required></textarea>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="telecommuting">
+                                <label class="form-check-label" for="telecommuting">
+                                    Telecommuting
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="hasLogo">
+                                <label class="form-check-label" for="hasLogo">
+                                    Has Company Logo
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="hasQuestions">
+                                <label class="form-check-label" for="hasQuestions">
+                                    Has Questions
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="posting_date" class="form-label">Posting Date</label>
+                            <input type="date" class="form-control" id="posting_date">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="application_deadline" class="form-label">Application Deadline</label>
+                            <input type="date" class="form-control" id="application_deadline">
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Analyze Job Posting</button>
+                    </div>
+                </form>
+                
+                <div class="loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Analyzing job posting...</p>
+                </div>
+                
+                <div class="result-card card">
+                    <div class="card-body">
+                        <h4 class="card-title">Analysis Results</h4>
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h5>Fraud Prediction:</h5>
+                                <p id="fraudResult" class="h3"></p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Risk Level:</h5>
+                                <p id="riskLevel" class="h3"></p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h5>Probability:</h5>
+                            <div class="progress">
+                                <div id="probabilityBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                            </div>
+                            <p id="probabilityText" class="text-center mt-2"></p>
+                        </div>
+                        <div class="mt-4">
+                            <h5>Features Used:</h5>
+                            <div id="featuresUsed" class="small text-muted"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Analysis Section -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="mb-0">Data Analysis</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Fraud Distribution Chart -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Fraud Distribution</h5>
+                                <canvas id="fraudDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Employment Type Distribution -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Employment Type Distribution</h5>
+                                <canvas id="employmentTypeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <!-- Character Count Histogram -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Character Count Distribution by Job Type</h5>
+                                <canvas id="histogramChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fraudulent Jobs Histogram -->
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Detailed Fraudulent Jobs Distribution</h5>
+                                <canvas id="fraudHistogramChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('jobForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Show loading
+            document.querySelector('.loading').style.display = 'block';
+            document.querySelector('.result-card').style.display = 'none';
+            
+            // Get form data
+            const jobData = {
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                company_name: document.getElementById('company').value,
+                location: document.getElementById('location').value,
+                department: document.getElementById('department').value,
+                industry: document.getElementById('industry').value,
+                function: document.getElementById('function').value,
+                employment_type: document.getElementById('employment_type').value,
+                salary_range: document.getElementById('salary_range').value,
+                required_experience: document.getElementById('required_experience').value,
+                required_education: document.getElementById('required_education').value,
+                company_profile: document.getElementById('company_profile').value,
+                telecommuting: document.getElementById('telecommuting').checked,
+                has_company_logo: document.getElementById('hasLogo').checked,
+                has_questions: document.getElementById('hasQuestions').checked,
+                posting_date: document.getElementById('posting_date').value,
+                application_deadline: document.getElementById('application_deadline').value,
+                fraud_phrase_count: 0,  // This would need to be calculated
+                character_count: document.getElementById('description').value.length,
+                avg_salary: 0,  // This would need to be calculated
+                required_skills_count: 0,  // This would need to be calculated
+                benefits_count: 0  // This would need to be calculated
+            };
+            
+            try {
+                const response = await fetch('/scan-job', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(jobData)
+                });
+                
+                const result = await response.json();
+                
+                // Update UI with results
+                document.getElementById('fraudResult').textContent = 
+                    result.is_fraudulent ? 'Fraudulent' : 'Legitimate';
+                document.getElementById('fraudResult').className = 
+                    `h3 ${result.is_fraudulent ? 'text-danger' : 'text-success'}`;
+                
+                document.getElementById('riskLevel').textContent = result.risk_level;
+                document.getElementById('riskLevel').className = 
+                    `h3 risk-${result.risk_level.toLowerCase()}`;
+                
+                const probability = result.fraud_probability * 100;
+                document.getElementById('probabilityBar').style.width = `${probability}%`;
+                document.getElementById('probabilityBar').className = 
+                    `progress-bar ${probability > 70 ? 'bg-danger' : probability > 40 ? 'bg-warning' : 'bg-success'}`;
+                document.getElementById('probabilityText').textContent = 
+                    `${probability.toFixed(1)}% probability of fraud`;
+                
+                // Show features used
+                const featuresUsed = result.features_used;
+                document.getElementById('featuresUsed').innerHTML = `
+                    <p><strong>Text Features:</strong> ${featuresUsed.text_features.join(', ')}</p>
+                    <p><strong>Numeric Features:</strong> ${featuresUsed.numeric_features.join(', ')}</p>
+                    <p><strong>Categorical Features:</strong> ${featuresUsed.categorical_features.join(', ')}</p>
+                `;
+                
+                // Show results
+                document.querySelector('.loading').style.display = 'none';
+                document.querySelector('.result-card').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while analyzing the job posting.');
+                document.querySelector('.loading').style.display = 'none';
+            }
+        });
+
+        // Load and display analysis data
+        async function loadAnalysisData() {
+            try {
+                const response = await fetch('/analysis-data');
+                const data = await response.json();
+                
+                // Fraud Distribution Chart
+                const fraudCtx = document.getElementById('fraudDistributionChart').getContext('2d');
+                new Chart(fraudCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: data.fraud_distribution.labels,
+                        datasets: [{
+                            data: data.fraud_distribution.values,
+                            backgroundColor: ['#28a745', '#dc3545'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Distribution of Legitimate vs Fraudulent Jobs'
+                            }
+                        }
+                    }
+                });
+
+                // Employment Type Distribution Chart
+                const employmentCtx = document.getElementById('employmentTypeChart').getContext('2d');
+                const employmentTypes = data.employment_type_distribution.map(item => item.employment_type);
+                const employmentLegitimate = data.employment_type_distribution.map(item => item.legitimate);
+                const employmentFraudulent = data.employment_type_distribution.map(item => item.fraudulent);
+
+                new Chart(employmentCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: employmentTypes,
+                        datasets: [
+                            {
+                                label: 'Legitimate',
+                                data: employmentLegitimate,
+                                backgroundColor: '#28a745',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Fraudulent',
+                                data: employmentFraudulent,
+                                backgroundColor: '#dc3545',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Employment Type Distribution'
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 45
+                                }
+                            },
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                // Character Count Histogram
+                const histCtx = document.getElementById('histogramChart').getContext('2d');
+                const binLabels = data.histogram_data.bins.slice(0, -1).map((bin, i) => 
+                    `${Math.round(bin)}-${Math.round(data.histogram_data.bins[i + 1])}`
+                );
+
+                new Chart(histCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: binLabels,
+                        datasets: [
+                            {
+                                label: 'Fraudulent Jobs',
+                                data: data.histogram_data.values_fraud,
+                                backgroundColor: 'rgba(220, 53, 69, 0.7)',
+                                borderColor: 'rgba(220, 53, 69, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Legitimate Jobs',
+                                data: data.histogram_data.values_legit,
+                                backgroundColor: 'rgba(40, 167, 69, 0.7)',
+                                borderColor: 'rgba(40, 167, 69, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Character Count Distribution by Job Type'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.raw} jobs`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Character Count Range'
+                                },
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 45
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Number of Jobs'
+                                },
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+                        },
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                });
+
+                // Fraudulent Jobs Histogram
+                const fraudHistCtx = document.getElementById('fraudHistogramChart').getContext('2d');
+                const fraudBinLabels = data.fraud_histogram.bins.slice(0, -1).map((bin, i) => 
+                    `${Math.round(bin)}-${Math.round(data.fraud_histogram.bins[i + 1])}`
+                );
+
+                new Chart(fraudHistCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: fraudBinLabels,
+                        datasets: [{
+                            label: 'Fraudulent Jobs',
+                            data: data.fraud_histogram.values,
+                            backgroundColor: 'rgba(220, 53, 69, 0.7)',
+                            borderColor: 'rgba(220, 53, 69, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Detailed Distribution of Fraudulent Jobs'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.raw} fraudulent jobs`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Character Count Range'
+                                },
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 45,
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Number of Fraudulent Jobs'
+                                },
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                }
+                            }
+                        },
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading analysis data:', error);
+            }
+        }
+
+        // Load analysis data when page loads
+        document.addEventListener('DOMContentLoaded', loadAnalysisData);
+    </script>
+</body>
+</html> 
